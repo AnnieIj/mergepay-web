@@ -136,7 +136,7 @@ describe("classifyAuthVerify — null safety", () => {
     expect(
       classifyAuthVerify({
         header: null,
-        body: { token: "valid_JWT_token_123" },
+        body: { token: "valid_JWT.token_123" },
       })
     ).toBe("valid");
   });
@@ -169,7 +169,11 @@ describe("classifyAuthVerify — null safety", () => {
 });
 
 describe("isSessionToken", () => {
-  it("accepts a valid JWT-like string", () => {
+  it("accepts a valid JWT-like string (with dots)", () => {
+    expect(isSessionToken("eyJhbGci.eyJzdWIi.SflKxwRJ")).toBe(true);
+  });
+
+  it("accepts a valid base64url string (without dots)", () => {
     expect(isSessionToken("eyJhbGci_eyJzdWIi_SflKxwRJ")).toBe(true);
   });
 

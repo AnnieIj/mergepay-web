@@ -259,7 +259,9 @@ export function walletMessage(code: WalletErrorCode): string {
 }
 
 // Substring classifiers. Order matters: more specific patterns first.
-const SESSION_TOKEN_SCHEMA = z.string().regex(/^[A-Za-z0-9_\-]+$/);
+// JWTs are three base64url segments separated by dots, so dots are allowed
+// alongside the base64url character set.
+const SESSION_TOKEN_SCHEMA = z.string().regex(/^[A-Za-z0-9_\-.]+$/);
 
 const REJECTED_PATTERNS = [
   /user (denied|declined|cancelled|canceled|rejected)/i,
