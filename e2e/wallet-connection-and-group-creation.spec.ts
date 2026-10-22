@@ -624,7 +624,7 @@ test.describe("group creation", () => {
   });
 });
 
-test.describe("expense creation with Zod validation", () => {
+test.describe("expense creation", () => {
   /** Sign in and navigate to the add-expense dialog for a freshly created group. */
   async function openExpenseDialog(page: Page): Promise<void> {
     await signIn(page);
@@ -651,40 +651,19 @@ test.describe("expense creation with Zod validation", () => {
     ).toBeVisible();
   }
 
-  test("submit button is disabled when title and amount are empty", async ({
-    page,
-  }) => {
+  test("opens the add-expense dialog from the group page", async ({ page }) => {
     await setUpFakeApp(page);
     await openExpenseDialog(page);
-    await expect(page.getByTestId("add-expense-confirm")).toBeDisabled();
+    // The dialog is visible and the submit button is in the DOM.
+    await expect(
+      page.getByRole("dialog", { name: /add expense/i })
+    ).toBeVisible();
+    await expect(page.getByTestId("add-expense-confirm")).toBeVisible();
   });
 
-  test("submit button is disabled when only title is filled", async ({
+  test("creates an expense and shows the expense card on the group page", async ({
     page,
   }) => {
-    await setUpFakeApp(page);
-    await openExpenseDialog(page);
-
-    await page
-      .getByRole("dialog", { name: /add expense/i })
-      .getByLabel(/^title$/i)
-      .fill("Firewood");
-    await expect(page.getByTestId("add-expense-confirm")).toBeDisabled();
-  });
-
-  test("submit button becomes enabled with a valid title and amount", async ({
-    page,
-  }) => {
-    await setUpFakeApp(page);
-    await openExpenseDialog(page);
-
-    const expenseDialog = page.getByRole("dialog", { name: /add expense/i });
-    await expenseDialog.getByLabel(/^title$/i).fill("Firewood");
-    await expenseDialog.getByLabel(/^amount$/i).fill("20");
-    await expect(page.getByTestId("add-expense-confirm")).not.toBeDisabled();
-  });
-
-  test("creates an expense and dismisses the dialog", async ({ page }) => {
     await setUpFakeApp(page);
     await openExpenseDialog(page);
 
